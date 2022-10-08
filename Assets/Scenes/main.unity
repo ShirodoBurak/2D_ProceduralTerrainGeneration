@@ -218,6 +218,7 @@ GameObject:
   - component: {fileID: 679874950}
   - component: {fileID: 679874952}
   - component: {fileID: 679874951}
+  - component: {fileID: 679874953}
   m_Layer: 0
   m_Name: World
   m_TagString: Untagged
@@ -327,6 +328,21 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!114 &679874953
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 679874949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 082f5a8f343697043b187aa6c10e1c70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  noiseSettings: []
+  noise1D: []
+  noise2D: []
 --- !u!1 &1299219376
 GameObject:
   m_ObjectHideFlags: 0
