@@ -186,6 +186,18 @@ MonoBehaviour:
     seed: 10
     scale: 0.043
     multiplier: 30
+  - noiseType: 1
+    seed: 10
+    scale: 0.043
+    multiplier: 1.3
+  - noiseType: 1
+    seed: 5
+    scale: 0.001
+    multiplier: 0.03
+  - noiseType: 1
+    seed: 10
+    scale: 0.17
+    multiplier: 0.32
   world: {fileID: 220555573}
   tile: {fileID: 11400000, guid: e68ba3f0e5b53334d982d2a2d960da1c, type: 2}
   loadedChunks: []

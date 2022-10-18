@@ -35,13 +35,38 @@ public class GeneratorLibrary : MonoBehaviour
     public Tilemap world;
     public TileBase tile;
     public List<Vector2Int> loadedChunks = new List<Vector2Int>();
-    #endregion
 
-    #region Tree and Vegetation Data
+    int ONE_DIMENSIONAL_LAYER_COUNT = 0;
+    int TWO_DIMENSIONAL_LAYER_COUNT = 0;
+
+
+
+
+
+    #endregion
     void Start()
     {
+        int oneDimCount = 0;
+        int twoDimCount = 0;
 
+        foreach (var item in noiseSettings)
+        {
+            if (item.noiseType == NoiseProperties.NoiseType.ONE_DIMENSIONAL)
+            {
+                oneDimCount++;
+            }
+            else
+            {
+                twoDimCount++;
+            }
+        }
+
+        ONE_DIMENSIONAL_LAYER_COUNT = oneDimCount;
+        TWO_DIMENSIONAL_LAYER_COUNT = twoDimCount;
     }
+
+    #region Tree and Vegetation Data
+
     void TreeInit()
     {
         Tree tree = new Tree();
@@ -69,16 +94,59 @@ public class GeneratorLibrary : MonoBehaviour
             float noise1d = 0;
             foreach (var item in noiseSettings)
             {
-                noise1d += (Mathf.PerlinNoise((i + (item.seed * 256) + 0.5f + offset.x) * item.scale, 1) * item.multiplier) / noiseSettings.Length;
+                if (item.noiseType == NoiseProperties.NoiseType.ONE_DIMENSIONAL)
+                {
+                    noise1d += (Mathf.PerlinNoise((i + (item.seed * 256) + 0.5f + offset.x) * item.scale, 1) * item.multiplier) / ONE_DIMENSIONAL_LAYER_COUNT;
+                }
             }
             result[i - cPos.x * chunkWidth] = new Vector2(i, noise1d);
         }
         return result;
     }
+
+
     // Cave generation or Ore generation
-    public Vector3[] GenerateNoise2D()
+    /*public Vector3[] GenerateNoise2D(Vector2Int cPos)
     {
-        return null;
+        Vector3[] result = new Vector3[chunkWidth * chunkWidth];
+
+        for (int i = cPos.x * chunkWidth; i < chunkWidth + cPos.x * chunkWidth; i++)
+        {
+            for (int j = cPos.y * chunkWidth; j < cPos.y*chunkWidth+chunkWidth; j++)
+            {
+                float noise2d = 0;
+                foreach (var item in noiseSettings)
+                {
+                    if (item.noiseType == NoiseProperties.NoiseType.TWO_DIMENSIONAL)
+                    {
+                        noise2d += (Mathf.PerlinNoise((i + (item.seed * 256) + 0.5f + offset.x) * item.scale,
+                        (j + (item.seed * 256) + 0.5f + offset.y) * item.scale) * item.multiplier) / TWO_DIMENSIONAL_LAYER_COUNT;
+                    }
+                }
+                result[(i - cPos.x * chunkWidth) * (j - cPos.y * chunkWidth)] = new Vector3(i, j, noise2d);
+            }
+        }
+        return result;
+    }*/
+
+    public float GenerateNoise2D(int x, int y)
+    {
+
+
+        float noise2d = 0;
+        foreach (var item in noiseSettings)
+        {
+            if (item.noiseType == NoiseProperties.NoiseType.TWO_DIMENSIONAL)
+            {
+                noise2d += (Mathf.PerlinNoise((x + (item.seed * 256) + 0.5f + offset.x) * item.scale,
+                (y + (item.seed * 256) + 0.5f + offset.y) * item.scale) * item.multiplier) / TWO_DIMENSIONAL_LAYER_COUNT;
+            }
+        }
+        
+
+
+
+        return noise2d;
     }
     #endregion
     #region WorldController
@@ -86,34 +154,38 @@ public class GeneratorLibrary : MonoBehaviour
     public void GenerateChunk(Vector2Int cPos)
     {
         float distance = Vector2Int.Distance(cPos, GetChunkPosition());
-        if (distance < 5)
+        if (distance < 3)
         {
-            Vector2[] noise = GenerateNoise1D(cPos);
+            Vector2[] noise1d = GenerateNoise1D(cPos);
+            //Vector3[] noise2d = GenerateNoise2D(cPos);
             loadedChunks.Add(cPos);
             for (int x = cPos.x * chunkWidth; x < chunkWidth + cPos.x * chunkWidth; x++)
             {
                 for (int y = cPos.y * chunkWidth; y < cPos.y * chunkWidth + chunkWidth; y++) // noise[x - cPos.x * chunkWidth]
                 {
-                    if (y <= noise[x - cPos.x * chunkWidth].y)
+                    if (y <= noise1d[x - cPos.x * chunkWidth].y)
                     {
-                        if (y > noise[x - cPos.x * chunkWidth].y - 1)
+                        if (GenerateNoise2D(x,y) > 0.2f)
                         {
-                            if ((x % 2 == 0 && y % 2 == 0) && x - cPos.x * chunkWidth < y - cPos.y * chunkWidth)
+                            if (y > noise1d[x - cPos.x * chunkWidth].y - 1)
                             {
-                                world.SetTile(new Vector3Int(x, y), tileLib.iron);
+                                if ((x % 2 == 0 && y % 2 == 0) && x - cPos.x * chunkWidth < y - cPos.y * chunkWidth)
+                                {
+                                    world.SetTile(new Vector3Int(x, y), tileLib.iron);
+                                }
                             }
-                        }
-                        else if (y > noise[x - cPos.x * chunkWidth].y - 2)
-                        {
-                            world.SetTile(new Vector3Int(x, y), tileLib.grass);
-                        }
-                        else if (y > noise[x - cPos.x * chunkWidth].y - 8)
-                        {
-                            world.SetTile(new Vector3Int(x, y), tileLib.dirt);
-                        }
-                        else
-                        {
-                            world.SetTile(new Vector3Int(x, y), tileLib.stone);
+                            else if (y > noise1d[x - cPos.x * chunkWidth].y - 2)
+                            {
+                                world.SetTile(new Vector3Int(x, y), tileLib.grass);
+                            }
+                            else if (y > noise1d[x - cPos.x * chunkWidth].y - 8)
+                            {
+                                world.SetTile(new Vector3Int(x, y), tileLib.dirt);
+                            }
+                            else
+                            {
+                                world.SetTile(new Vector3Int(x, y), tileLib.stone);
+                            }
                         }
                     }
                 }
@@ -126,7 +198,7 @@ public class GeneratorLibrary : MonoBehaviour
     public void SaveChunk() { }
     // Unload chunk
     bool removeChunksRunning = false;
-    IEnumerator RemoveChunks(List<Vector2Int> cPos)
+    void RemoveChunks(List<Vector2Int> cPos)
     {
         removeChunksRunning = true;
         foreach (var item in cPos)
@@ -139,7 +211,6 @@ public class GeneratorLibrary : MonoBehaviour
                 }
             }
             loadedChunks.Remove(item);
-            yield return new WaitForFixedUpdate();
         }
         removeChunksRunning = false;
     }
@@ -158,7 +229,7 @@ public class GeneratorLibrary : MonoBehaviour
                     chunksToBeRemoved.Add(item);
                 }
             }
-            StartCoroutine(RemoveChunks(chunksToBeRemoved));
+            RemoveChunks(chunksToBeRemoved);
         }
     }
     #endregion
