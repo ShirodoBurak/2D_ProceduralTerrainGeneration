@@ -131,8 +131,6 @@ public class GeneratorLibrary : MonoBehaviour
 
     public float GenerateNoise2D(int x, int y)
     {
-
-
         float noise2d = 0;
         foreach (var item in noiseSettings)
         {
@@ -142,10 +140,6 @@ public class GeneratorLibrary : MonoBehaviour
                 (y + (item.seed * 256) + 0.5f + offset.y) * item.scale) * item.multiplier) / TWO_DIMENSIONAL_LAYER_COUNT;
             }
         }
-        
-
-
-
         return noise2d;
     }
     #endregion
