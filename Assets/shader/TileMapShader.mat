@@ -80,7 +80,7 @@ Material:
     - _Color: {r: 339.5, g: 173.44, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _LightPos: {r: 412.2, g: 167.9, b: 0, a: 17}
-    - _LightPos0: {r: 284.56, g: 152.4, b: 5.9, a: 1}
+    - _LightPos0: {r: 326.3, g: 158.2, b: 0, a: 1}
     - _LightPos1: {r: 353.6, g: 185.3, b: 0, a: 1}
     - _LightPos2: {r: 327.1, g: 183.3, b: 0, a: 1}
     - _NoisePos: {r: 79.7, g: 5.59, b: 17.7, a: 0.61}

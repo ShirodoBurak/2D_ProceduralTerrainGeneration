@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 Shader "Unlit/TileMapShader"
 {
     Properties
@@ -49,13 +51,17 @@ Shader "Unlit/TileMapShader"
             }
 
             StructuredBuffer<lightdata> lightDatas;
+            int _LightData_Size;
             float _Brightness = 1;
             vector _LightPos0;
             fixed4 frag (v2f i) : SV_Target
             {
                 float4 lpos1  = _LightPos0;
-                float _distance = distance(lpos1, i.vertex);
-                fixed4 col = tex2D(_MainTex, i.uv) / (_distance/20+ 0.8) * float4(1,1,1,0); 
+                float _distance = distance(lpos1, mul(unity_WorldToObject, i.vertex));
+                fixed4 col = tex2D(_MainTex, i.uv);
+                //if(_distance < 1.06f){
+                //    col = col-col;
+                //}
                 return col;
             }
             ENDCG

@@ -21,4 +21,10 @@ public class TileHolder : MonoBehaviour
         Tiles.Add("default:stone", stone);
         Tiles.Add("default:iron", iron);
     }
+    public TileBase getTile(string tilename)
+    {
+        TileBase value;
+        Tiles.TryGetValue(tilename, out value);
+        return value;
+    }
 }
