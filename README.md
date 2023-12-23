@@ -1,6 +1,5 @@
-# 2D_SurvivalRPG
-An ambitious attempt at making a simple Survival/RPG game.
+# 2D Procedural Terrain Generation
 
-*Very, very, very incomplete* but you can still download the source code and try it.
+This repository is purely made for experimentation. I have no ambition of completing this project.
 
 
